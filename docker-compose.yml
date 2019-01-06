@@ -1,11 +1,14 @@
 ###############################################################################
 #                          Generated on phpdocker.io                          #
 ###############################################################################
+###############################################################################
+#                          Generated on phpdocker.io                          #
+###############################################################################
 version: "3.1"
 services:
 
-    db:
-      image: mysql:8.0
+    mysql:
+      image: mysql
       container_name: docker-symfony4-mysql
       working_dir: /application
       volumes:
@@ -35,21 +38,19 @@ services:
       volumes:
         - .:/application
         - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.2/fpm/conf.d/99-overrides.ini
-
     phpmyadmin:
       image: phpmyadmin/phpmyadmin
-      container_name: phpmyadmin
-      ports:
-        - "8081:80"
+      container_name: phpmyadmin-dot
+      restart: unless-stopped
       environment:
-        - PMA_USER=root
-        - PMA_PASSWORD=root
-        - PMA_HOST=php-mysql
-        - PMA_HOST=db
-        - PMA_PORT=3306
-      links:
-        - db:db
-
+        MYSQL_ROOT_PASSWORD: dbrootpw
+        PMA_HOST: mysql
+      depends_on:
+        - mysql
+      ports:
+        - 8003:80  
     redis:
-      image: redis:alpine
-      container_name: php-redis 
+      container_name: 'sc-redis'
+      image: redis:latest
+      ports:
+        - "6379:6379"             
